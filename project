@@ -1,0 +1,90 @@
+project folder
+expense-tracker/
+├── index.html
+├── styles.css
+├── scripts.js
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Expense Tracker</h1>
+        <!-- Add your UI components here -->
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
+
+<div class="container mt-5">
+    <h1>Expense Tracker</h1>
+    <form id="expense-form" class="mb-3">
+        <div class="form-group">
+            <label for="expense-name">Expense Name</label>
+            <input type="text" class="form-control" id="expense-name" required>
+        </div>
+        <div class="form-group">
+            <label for="expense-amount">Amount</label>
+            <input type="number" class="form-control" id="expense-amount" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Expense</button>
+    </form>
+    <div id="expense-list"></div>
+</div>
+
+// Retrieve existing expenses from local storage or initialize an empty array
+let expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+
+const expenseForm = document.getElementById('expense-form');
+const expenseList = document.getElementById('expense-list');
+
+// Function to display expenses
+function displayExpenses() {
+    expenseList.innerHTML = '';
+    expenses.forEach((expense, index) => {
+        const expenseItem = document.createElement('div');
+        expenseItem.className = 'card mb-2';
+        expenseItem.innerHTML = `
+            <div class="card-body">
+                <h5 class="card-title">${expense.name}</h5>
+                <p class="card-text">${expense.amount}</p>
+                <button class="btn btn-danger" onclick="removeExpense(${index})">Remove</button>
+            </div>
+        `;
+        expenseList.appendChild(expenseItem);
+    });
+}
+
+// Function to add an expense
+function addExpense(name, amount) {
+    expenses.push({ name, amount });
+    localStorage.setItem('expenses', JSON.stringify(expenses));
+    displayExpenses();
+}
+
+// Function to remove an expense
+function removeExpense(index) {
+    expenses.splice(index, 1);
+    localStorage.setItem('expenses', JSON.stringify(expenses));
+    displayExpenses();
+}
+
+expenseForm.addEventListener('submit', function (event) {
+    event.preventDefault();
+    const name = document.getElementById('expense-name').value;
+    const amount = parseFloat(document.getElementById('expense-amount').value);
+    addExpense(name, amount);
+    expenseForm.reset();
+});
+
+// Initial display of expenses
+displayExpenses();
+
+
